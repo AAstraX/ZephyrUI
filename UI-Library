@@ -883,6 +883,7 @@ function ZephyrUI:CreateWindow(Settings)
 	Main.Shadow.Image.ImageTransparency = 1
 	LoadingFrame.Version.TextTransparency = 1
 	LoadingFrame.Title.Text = Settings.LoadingTitle or "Zephyr INC"
+       LoadingFrame.Subtitle.Text = Settings.Loading2ndTitle or "by C1PH3R & Kiru"
 	if Settings.LoadingTitle ~= "Zephyr INC" then
 		LoadingFrame.Version.Text = "Zephyr UI"
 	end
