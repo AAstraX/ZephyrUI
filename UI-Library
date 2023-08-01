@@ -25,7 +25,7 @@ local ZephyrUI = {
 			TextFont = "Default", -- Default will use the various font faces used across Zephyr
 			TextColor = Color3.fromRGB(240, 240, 240),
 
-			Background = Color3.fromRGB(30, 30, 30),
+			Background = Color3.fromRGB(25, 25, 25),
 			Topbar = Color3.fromRGB(34, 34, 34),
 			Shadow = Color3.fromRGB(20, 20, 20),
 
@@ -925,7 +925,34 @@ function ZephyrUI:CreateWindow(Settings)
 		end
 	end
 
-	
+	if Settings.Discord then
+		if not isfolder(ZephyrFolder.."/Discord Invites") then
+			makefolder(ZephyrFolder.."/Discord Invites")
+		end
+		if not isfile(ZephyrFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension) then
+			if request then
+				request({
+					Url = 'http://127.0.0.1:6463/rpc?v=1',
+					Method = 'POST',
+					Headers = {
+						['Content-Type'] = 'application/json',
+						Origin = 'https://discord.com'
+					},
+					Body = HttpService:JSONEncode({
+						cmd = 'INVITE_BROWSER',
+						nonce = HttpService:GenerateGUID(false),
+						args = {code = Settings.Discord.Invite}
+					})
+				})
+			end
+
+			if Settings.Discord.RememberJoins then -- We do logic this way so if the developer changes this setting, the user still won't be prompted, only new users
+				writefile(ZephyrFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension,"Zephyr RememberJoins is true for this invite, this invite will not ask you to join again")
+			end
+		else
+
+		end
+	end
 
 	if Settings.KeySystem then
 		if not Settings.KeySettings then
@@ -1306,8 +1333,8 @@ function ZephyrUI:CreateWindow(Settings)
 
 			return ButtonValue
 		end
- 
-                  -- ColorPicker
+
+		-- ColorPicker
 		function Tab:CreateColorPicker(ColorPickerSettings) -- by Throit
 			ColorPickerSettings.Type = "ColorPicker"
 			local ColorPicker = Elements.Template.ColorPicker:Clone()
@@ -1365,7 +1392,6 @@ function ZephyrUI:CreateWindow(Settings)
 					TweenService:Create(Background, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
 				end
 			end)
-
 
 			game:GetService("UserInputService").InputEnded:Connect(function(input, gameProcessed) if input.UserInputType == Enum.UserInputType.MouseButton1 then 
 					mainDragging = false
